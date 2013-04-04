@@ -1,0 +1,27 @@
+{
+  "name": "mongoose-fixture",
+  "preferGlobal": true,
+  "version": "0.1.0",
+  "author": "Morgan Craft (http://morgancraft.com)",
+  "description": "Static Fixture Loader with Mongoose Schema",
+  "main": "./lib/MongooseFixture",
+  "bin": "./bin/mongoose-fixture",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mgan59/mongoose-fixture.git"
+  },
+  "keywords": [
+    "cli",
+    "mongoose",
+    "fixture"
+  ],
+  "dependencies" : {
+    "optimist" :  "0.3.5",
+    "mongoose"    :  "3.5.7",
+    "async" :  "0.2.5"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.8"
+  }
+}
