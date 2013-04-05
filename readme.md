@@ -156,3 +156,6 @@ The code below is a sample of ```mongoose-fixture-config.js```
     module.exports = fixtureConfig;
 
 
+## TODO
+
+* create boiler-plate templates for schemas and data-fixtures 
