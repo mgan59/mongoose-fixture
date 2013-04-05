@@ -40,14 +40,14 @@ A short example of an array of object-literals
 
     module.exports = [
         {
-         _id:'open_camper_single', 
-         name:'Open Camper Single', 
-         tags:['camp','summer','tent','wilderness']
+            _id:'open_camper_single', 
+            name:'Open Camper Single', 
+            tags:['camp','summer','tent','wilderness']
         },
         {
-         _id:'red_oil_lantern',
-         name:'Red Oil Lantern', 
-         tags:['red','light source','oil lantern']
+            _id:'red_oil_lantern',
+            name:'Red Oil Lantern', 
+            tags:['red','light source','oil lantern']
         }
     ];
 
@@ -94,12 +94,12 @@ The code below is a sample of ```mongoose-fixture-config.js```
             // should be the name of the schemas file (without the .js)
             schema:'ProductSchema', 
             // should be the name of the data-fixture file (without the .js)
-            data:'Facilities',
+            data:'ProductData',
             // put the file paths in
             schemaPath:schemaPath, 
             fixturePath:dataFixturePath,
             // should put the collection name in for removal process
-            collection:'facilities'
+            collection:'products'
         },
         {
             itemName:'Category', 
