@@ -1,7 +1,7 @@
 {
   "name": "mongoose-fixture",
   "preferGlobal": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Morgan Craft (http://morgancraft.com)",
   "description": "Static Fixture Loader with Mongoose Schema",
   "main": "./lib/MongooseFixture",
