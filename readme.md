@@ -21,7 +21,9 @@ By default the mongoose-fixture cmd interface requires 3 params
 * --configFile
 * --fixture listing
 * method [--add, --remove, --reset] to be defined.
-    
+
+examples:
+
     // loads the defined configFile, the fixture all and just adds the documents
     mongoose-fixture --configFile='/project/outDoorCamper/mongoose-fixture-config' --fixture='all' --add
 
