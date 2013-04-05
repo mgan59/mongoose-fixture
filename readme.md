@@ -21,8 +21,16 @@ By default the mongoose-fixture cmd interface requires 3 params
 * --configFile
 * --fixture listing
 * method [--add, --remove, --reset] to be defined.
+    
+    // loads the defined configFile, the fixture all and just adds the documents
+    mongoose-fixture --configFile='/project/outDoorCamper/mongoose-fixture-config' --fixture='all' --add
 
-    mongoose-fixture --configFile='/project/mongoose-fixture-config' --fixture='all' --add
+    // removes only the documents from the collections define in the fixture 'stores' in the config
+    mongoose-fixture --configFile='/project/outDoorCamper/mongoose-fixture-config' --fixture='stores' --remove 
+
+    // can run fixtures for an entire different project using a different command
+    // using the reset would drop all the documents from the collections in fixture catalog and then reload them
+    mongoose-fixture --configFile='/project/kioskCenter/mongoose-fixture-config' --fixture='catalog' --reset
 
 
 ## The Setup
@@ -146,17 +154,3 @@ The code below is a sample of ```mongoose-fixture-config.js```
     module.exports = fixtureConfig;
 
 
-
-## Putting it all together
-
-Once you have configured all your data, schemas, and config time to fire up your fixture-loader.  By default the mongoose-fixture cmd interface expects the configFile, fixture listing, and a method [add,remove,reset] to be defined.
-
-    // loads the defined configFile, the fixture all and just adds the documents
-    mongoose-fixture --configFile='/project/outDoorCamper/mongoose-fixture-config' --fixture='all' --add
-
-    // removes only the documents from the collections define in the fixture 'stores' in the config
-    mongoose-fixture --configFile='/project/outDoorCamper/mongoose-fixture-config' --fixture='stores' --remove 
-
-    // can run fixtures for an entire different project using a different command
-    // using the reset would drop all the documents from the collections in fixture catalog and then reload them
-    mongoose-fixture --configFile='/project/kioskCenter/mongoose-fixture-config' --fixture='catalog' --reset
