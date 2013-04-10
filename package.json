@@ -4,7 +4,7 @@
   "version": "0.1.1",
   "author": "Morgan Craft (http://morgancraft.com)",
   "description": "Static Fixture Loader with Mongoose Schema",
-  "main": "./lib/MongooseFixture",
+  "main": "./lib/index.js",
   "bin": "./bin/mongoose-fixture",
   "repository": {
     "type": "git",
