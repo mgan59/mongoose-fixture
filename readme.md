@@ -80,24 +80,36 @@ A Schema file defined for the above data fixture
 
 
 
-### Create a Configuration Fixture Listing 
+### Create a Configuration Fixture Listing
 
-A json settings file to set your mongodb database and host/port settings and file-paths to the directories where data-fixtures exist and schemas
+In order to run mongoose-fixture you need to create a fixture-config file.  By design mongoose-fixture is meant to be ran from any directory not necessarily your projects root directory.  As a result the command-line interface requires you to link to a config file so that it knows your project pathing, along with other fixture listing setup and mongodb connection settings.
 
-Assuming you are working on a project called 'Out Door Camper' and you are creating the config files at
+Below is an example of a configuration, there exists a helper within the mongoose-fixture module to help organize and provide an interface for configuring data.
+
+The below example works with the assumption you are working on a project called 'Out Door Camper' and you are creating the config files at
 
     /projects/outDoorCamper/mongoose-fixture-config.js
 
 The code below is a sample of ```mongoose-fixture-config.js```
-
-    var basePath = '/projects/outDoorCamper';
-    var dataFixturePath = basePath+'/data-fixtures/';
-    var schemaPath = basePath+'/lib/schemas/';
-
-    var fixtureListings = {};
     
-    // Create a Listing of fixtures 
-    fixtureListings['all'] = [
+    // Load the default object that helps manage a FixtureConfig
+    var FixtureConfig = require('mongoose-fixture).FixtureConfig;
+
+    var fixtureConfig = FixtureConfig({
+        mongoConnection:{
+            'host':'localhost',
+            'port':'27017',
+            'dbname':'outdoorcamper_store'
+        },
+        paths:{
+            schemaPath:'/projects/outDoorCamper/data-fixtures/schemas/',
+            dataFixturePath:'projects/outDoorCamper/data-fixtures/fixtures/',
+        }
+    });
+    
+    // Create a Listing of fixtures
+    // Can leave empty 
+    var allFixtures = [
         {
             // general name used in output log
             itemName:'Product', 
@@ -105,9 +117,6 @@ The code below is a sample of ```mongoose-fixture-config.js```
             schema:'ProductSchema', 
             // should be the name of the data-fixture file (without the .js)
             data:'ProductData',
-            // put the file paths in
-            schemaPath:schemaPath, 
-            fixturePath:dataFixturePath,
             // should put the collection name in for removal process
             collection:'products'
         },
@@ -115,47 +124,33 @@ The code below is a sample of ```mongoose-fixture-config.js```
             itemName:'Category', 
             schema:'CategorySchema', 
             data:'CategoryData',
-            schemaPath:schemaPath, 
-            fixturePath:dataFixturePath,
             collection:'categories'
         },
         {
             itemName:'StoreLocations',
             schema:'StoreLocationsSchema',
             data:'StoreLocationData', 
-            schemaPath:schemaPath, 
-            fixturePath:dataFixturePath, 
             collection:'storeLocations'
         }
     ];
-
-    fixtureListings['stores'] = [
+    
+    // example of a single fixture listing
+    // so one could just reset the store locations collection
+    var storeFixtures = [
         // only a single fixture listed --> stores
         {
             itemName:'StoreLocations',
             schema:'StoreLocationsSchema',
             data:'StoreLocationData', 
-            schemaPath:schemaPath, 
-            fixturePath:dataFixturePath, 
             collection:'storeLocations'
         }
     ];
 
+    // load fixture listings
+    fixtureConfig.fixtureListings.set('all', allFixtures); 
+    fixtureConfig.fixtureListings.set('stores', storeFixtures);
 
-    // combine mongo connection and fixtureListings
-    var fixtureConfig = {
-        mongoConnection:{
-            host:'localhost',
-            port:'27017',
-            dbname:'outdoorCamperStore'
-        },
-        fixtureListings:fixtureListings
-    };
 
     // export the config
     module.exports = fixtureConfig;
 
-
-## TODO
-
-* create boiler-plate templates for schemas and data-fixtures 
