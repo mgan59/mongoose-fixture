@@ -1,12 +1,19 @@
 # Mongoose-Fixture
 
-A command-line interface and utility library to load documents into mongodb using mongoose schemas and static json arrays/documents.
+Inspired from Django's data-fixtures and Ruby's rake.  Mongoose-Fixture is a command-line interface and utility library to load documents from files into mongodb using mongoose schemas and static json arrays/documents.
 
 Can't I import static json into mongo using 
 
     mongoimport --collection collectionName --file collection.json
 
-Yes, that does work.  But what if you wanted to be able to import multiple files into multiple collections at once and be able to reset the data and arrange subsets of collections.  Even more what if you were testing a set of new features that needed you to programmatically reset or add new data from fixtures.  Mongoose-Fixture is here to help.
+Yes, that does work.  But over time that method can become complex to manage.  
+
+Mongoose-Fixture provides more robust features such as:
+
+* Project Configuration, organize collections into sets
+* BoilerPlates, generate Schemas/Fixtures to reduce typing
+* Programming Interface that can be run from within nodejs
+
 
 ## Installation
 
@@ -14,143 +21,83 @@ Recommend global install as this package contains a bin command that can be used
 
     npm install mongoose-fixture -g
 
-## Command Line Interface
+## Getting Started 
 
-By default the mongoose-fixture cmd interface requires 3 params
+In order to get started with Mongoose-Fixture we first must create our config-file and then define our fixtures/schemas.
 
-* --configFile
+### Creating a ConfigFile
+
+Mongoose-Fixture cmd usage requires the creation of a config-file for each project.  This config file specifies where and how to load fixtures/schemas as well as the boiler-plate generators.
+
+First you must create this config file, ``cd`` to your projects local-root directory.
+
+    mongoose-fixture --generateConfig
+
+This will create a file in the local directory called ``mongoose-fixture-config.js`` with a few default directories set for ``fixtures/`` and ``schemas``.  Feel free to change these values to where you want your mongoose-fixtures.
+
+
+By default ``mongoose-fixture`` will look for a config file in the local directory called ``mongoose-fixture-config`` if you have different file name or wish to use ``mongoose-fixture`` with a different config you can specifiy the config in the cmd
+
+    mongoose-fixture --configFile='/project/outDoorCamper/mf-config'
+
+### Creating our Fixtures/Schemas
+
+Once we have created our config file for our project we can now begin creating our fixtures/schemas - assuming you are fine with the default config paths and have created the directories.
+
+Once again we can generate boiler-plates for our schemas and fixtures
+
+First we will create a Schema, lets pretend we are building an ecommerece store so we generate a schema for our ``Products``
+
+    mongoose-fixture --generateSchema='ProductSchema'
+
+This should create a file called ``ProductSchema.js`` in your ``schemas/`` project directory.
+
+Then we should create our corresponding data-fixture
+
+    mongoose-fixture --generateFixture='Products'
+
+which will create a file ``products.js`` in the ``fixtures/`` directory.
+
+From here you should first edit your ``ProductSchema.js`` and create the schema you want based on the [mongoose-documentation](http://mongoosejs.com/docs/guide.html).
+
+Then you should edit your corresponding data-fixture to follow the defined schema.  Any field you add to your data-fixture objects that aren't part of the schema will be ignored when loaded into mongoDB.
+
+### Updating your Config with Fixture/Schema
+
+Inside of your config file you will need to add you newly created schema/fixture pair to a FixtureListing.
+
+    // create our primary listing set
+    var allFixtures = [{
+        itemName:'Products', 
+        schema:'ProductSchema',
+        data:'Products',
+        collection:'products'
+    }];
+
+You should now be all set to load your fixture data.
+
+
+## Loading Fixtures into MongoDB
+
+To interact with your fixtures/schemas you will need to use two parameter flags.
+
 * --fixture listing
+** defines which collection of fixtures you want the ``method`` to use
 * method [--add, --remove, --reset] to be defined.
+** reset first does --remove and then does --add behind the scenes
 
-examples:
 
-    // loads the defined configFile, the fixture all and just adds the documents
-    mongoose-fixture --configFile='/project/outDoorCamper/mongoose-fixture-config' --fixture='all' --add
+examples assume you have ``mongoose-fixture-config.js`` in local dir:
+
+    //  loads fixture 'all' and just adds the documents
+    mongoose-fixture --fixture='all' --add
 
     // removes only the documents from the collections define in the fixture 'stores' in the config
-    mongoose-fixture --configFile='/project/outDoorCamper/mongoose-fixture-config' --fixture='stores' --remove 
+    mongoose-fixture --fixture='stores' --remove 
 
     // can run fixtures for an entire different project using a different command
     // using the reset would drop all the documents from the collections in fixture catalog and then reload them
-    mongoose-fixture --configFile='/project/kioskCenter/mongoose-fixture-config' --fixture='catalog' --reset
+    mongoose-fixture --fixture='catalog' --reset
 
 
-## The Setup
-
-Setting up mongoose-fixture for a project will entail 3 specific tasks
-
-* Create Data Fixtures
-* Create Corresponding Mongoose Schemas
-* Create Configuration Fixture Listing
-
-
-### Creating a set of data fixtures
-
-A short example of an array of object-literals
-
-    module.exports = [
-        {
-            _id:'open_camper_single', 
-            name:'Open Camper Single', 
-            tags:['camp','summer','tent','wilderness']
-        },
-        {
-            _id:'red_oil_lantern',
-            name:'Red Oil Lantern', 
-            tags:['red','light source','oil lantern']
-        }
-    ];
-
-
-### Creating a Schema File
-
-A Schema file defined for the above data fixture
-
-    module.exports = function(mongoose){
-        
-        var productSchema = mongoose.Schema({
-            _id:{type:String},
-            name:{type:String},
-            tags:{type:Array},
-            score:{type:Number}
-        });
-
-        return productSchema;
-    };
-
-
-
-### Create a Configuration Fixture Listing
-
-In order to run mongoose-fixture you need to create a fixture-config file.  By design mongoose-fixture is meant to be ran from any directory not necessarily your projects root directory.  As a result the command-line interface requires you to link to a config file so that it knows your project pathing, along with other fixture listing setup and mongodb connection settings.
-
-Below is an example of a configuration, there exists a helper within the mongoose-fixture module to help organize and provide an interface for configuring data.
-
-The below example works with the assumption you are working on a project called 'Out Door Camper' and you are creating the config files at
-
-    /projects/outDoorCamper/mongoose-fixture-config.js
-
-The code below is a sample of ```mongoose-fixture-config.js```
-    
-    // Load the default object that helps manage a FixtureConfig
-    var FixtureConfig = require('mongoose-fixture).FixtureConfig;
-
-    var fixtureConfig = FixtureConfig({
-        mongoConnection:{
-            'host':'localhost',
-            'port':'27017',
-            'dbname':'outdoorcamper_store'
-        },
-        paths:{
-            schemaPath:'/projects/outDoorCamper/data-fixtures/schemas/',
-            dataFixturePath:'projects/outDoorCamper/data-fixtures/fixtures/',
-        }
-    });
-    
-    // Create a Listing of fixtures
-    // Can leave empty 
-    var allFixtures = [
-        {
-            // general name used in output log
-            itemName:'Product', 
-            // should be the name of the schemas file (without the .js)
-            schema:'ProductSchema', 
-            // should be the name of the data-fixture file (without the .js)
-            data:'ProductData',
-            // should put the collection name in for removal process
-            collection:'products'
-        },
-        {
-            itemName:'Category', 
-            schema:'CategorySchema', 
-            data:'CategoryData',
-            collection:'categories'
-        },
-        {
-            itemName:'StoreLocations',
-            schema:'StoreLocationsSchema',
-            data:'StoreLocationData', 
-            collection:'storeLocations'
-        }
-    ];
-    
-    // example of a single fixture listing
-    // so one could just reset the store locations collection
-    var storeFixtures = [
-        // only a single fixture listed --> stores
-        {
-            itemName:'StoreLocations',
-            schema:'StoreLocationsSchema',
-            data:'StoreLocationData', 
-            collection:'storeLocations'
-        }
-    ];
-
-    // load fixture listings
-    fixtureConfig.fixtureListings.set('all', allFixtures); 
-    fixtureConfig.fixtureListings.set('stores', storeFixtures);
-
-
-    // export the config
-    module.exports = fixtureConfig;
 
