@@ -2,15 +2,15 @@
 
 Inspired from Django's data-fixtures and Ruby's rake.  Mongoose-Fixture is a command-line interface and utility library to load documents from files into mongodb using mongoose schemas and static json arrays/documents.
 
-Can't I import static json into mongo using 
+A simple approach using the built in ``mongoimport`` as follows would import documents from a single javascript file. 
 
     mongoimport --collection collectionName --file collection.json
 
-Yes, that does work.  But over time that method can become complex to manage.  
+But over time that method would become complex to manage
 
 Mongoose-Fixture provides more robust features such as:
 
-* Project Configuration, organize collections into sets
+* Project Configuration, organize documents collections into sets
 * BoilerPlates, generate Schemas/Fixtures to reduce typing
 * Programming Interface that can be run from within nodejs
 
@@ -19,7 +19,7 @@ Mongoose-Fixture provides more robust features such as:
 
 Recommend global install as this package contains a bin command that can be used globally accepting configuration files
 
-    npm install mongoose-fixture -g
+    npm install -g mongoose-fixture
 
 ## Getting Started 
 
@@ -64,7 +64,7 @@ Then you should edit your corresponding data-fixture to follow the defined schem
 
 ### Updating your Config with Fixture/Schema
 
-Inside of your config file you will need to add you newly created schema/fixture pair to a FixtureListing.
+Inside of your config file you will need to add you newly created schema/fixture pairs to a FixtureListing.
 
     // create our primary listing set
     var allFixtures = [{
