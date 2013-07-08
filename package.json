@@ -15,11 +15,17 @@
     "mongoose",
     "fixture"
   ],
+  "devDependencies":{
+    "tap":"0.4.3"
+  },
   "dependencies" : {
     "optimist" :  "0.3.5",
-    "mongoose"    :  "3.5.7",
+    "mongoose" :  "3.5.7",
     "async" :  "0.2.5",
     "lodash":"1.2.1"
+  },
+  "scripts":{
+    "test":"tap ./test"
   },
   "license": "MIT",
   "engines": {
