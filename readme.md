@@ -1,19 +1,19 @@
 # Mongoose-Fixture
 
-Inspired from Django's data-fixtures and Ruby's rake.  Mongoose-Fixture is a command-line interface and utility library to load documents from files into mongodb using mongoose schemas and static json arrays/documents.
+Inspired from Django's data-fixtures and Ruby's rake but built for nodejs.  Mongoose-Fixture is a command-line and utility library to load static json arrays/documents into mongodb.  Ideal for working with the [MEAN](http://blog.mongodb.org/post/49262866911/the-mean-stack-mongodb-expressjs-angularjs-and) stack. 
 
-A simple approach using the built in ``mongoimport`` as follows would import documents from a single javascript file. 
+## Why would I use it?
 
-    mongoimport --collection collectionName --file collection.json
+Installing Mongodb will give access to the ``mongoimport`` command, however that is for simple importing and not flexible as a workflow-tool. 
 
-But over time that method would become complex to manage
+Mongoose-Fixture comes with the following features to improve developer workflow
 
-Mongoose-Fixture provides more robust features such as:
-
-* Project Configuration, organize documents collections into sets
+* Project Configuration, organize documents collections into sets, for custom batch executions
 * BoilerPlates, generate Schemas/Fixtures to reduce typing
-* Programming Interface that can be run from within nodejs
+* API can be used within other processes, a nodejs event-emitter
 
+
+# Getting Started
 
 ## Installation
 
@@ -21,26 +21,27 @@ Recommend global install as this package contains a bin command that can be used
 
     npm install -g mongoose-fixture
 
-## Getting Started 
-
 In order to get started with Mongoose-Fixture we first must create our config-file and then define our fixtures/schemas.
 
-### Creating a ConfigFile
+## Creating a ConfigFile
 
 Mongoose-Fixture cmd usage requires the creation of a config-file for each project.  This config file specifies where and how to load fixtures/schemas as well as the boiler-plate generators.
 
 First you must create this config file, ``cd`` to your projects local-root directory.
 
+    // creates a file ``mongoose-fixture-config.js`` in your working directory
     mongoose-fixture --generateConfig
 
-This will create a file in the local directory called ``mongoose-fixture-config.js`` with a few default directories set for ``fixtures/`` and ``schemas``.  Feel free to change these values to where you want your mongoose-fixtures.
+    // or you can define your own name
+    mongoose-fixture --generateConfig='mf-config'
 
+A generated config file will contain several environment variables such as mongodb connection strings, default directories for ``fixtures/`` and ``schemas``. And a single fixture-listing called ``all``.  You will need to customize these for your project. 
 
 By default ``mongoose-fixture`` will look for a config file in the local directory called ``mongoose-fixture-config`` if you have different file name or wish to use ``mongoose-fixture`` with a different config you can specifiy the config in the cmd
 
     mongoose-fixture --configFile='/project/outDoorCamper/mf-config'
 
-### Creating our Fixtures/Schemas
+## Creating our Fixtures/Schemas
 
 Once we have created our config file for our project we can now begin creating our fixtures/schemas - assuming you are fine with the default config paths and have created the directories.
 
@@ -62,7 +63,7 @@ From here you should first edit your ``ProductSchema.js`` and create the schema 
 
 Then you should edit your corresponding data-fixture to follow the defined schema.  Any field you add to your data-fixture objects that aren't part of the schema will be ignored when loaded into mongoDB.
 
-### Updating your Config with Fixture/Schema
+## Updating your Config with Fixture/Schema
 
 Inside of your config file you will need to add you newly created schema/fixture pairs to a FixtureListing.
 
@@ -99,5 +100,11 @@ examples assume you have ``mongoose-fixture-config.js`` in local dir:
     // using the reset would drop all the documents from the collections in fixture catalog and then reload them
     mongoose-fixture --fixture='catalog' --reset
 
+
+# New Development / Contribution
+
+* more tests
+* create a grunt hook, consider supporting own bin command?
+* more documentation (specifically examples)
 
 
