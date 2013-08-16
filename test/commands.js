@@ -1,8 +1,9 @@
 // nodejs libs
 var fs = require('fs');
 var process = require('child_process');
+var path = require('path');
 
-// include the isaacs node-tap test harness
+// include isaacs node-tap test harness
 var test = require('tap').test;
 
 //
@@ -17,8 +18,7 @@ var preTestCleanup = function(){
     // do some quick cleanup like deleting config
     // files generated from previous
     
-    var local = fs.realpathSync('./');
-    local += '/'+DEFAULT_FIXTURE_CONFIG;
+    var local = path.join(__dirname,DEFAULT_FIXTURE_CONFIG);
     var targetExists = fs.existsSync(local);
     // unlink config if it exists
     if(targetExists){
@@ -27,18 +27,16 @@ var preTestCleanup = function(){
 
 }();
 
-// First Tests
+// First Test, ensure a config file is generated
 test('Test Generate Config BoilerPlate', function(t){
-    t.plan(3);
+    t.plan(4);
     
     // do file check
-    var local = fs.realpathSync('./');
-    local += DEFAULT_FIXTURE_CONFIG;
+    var local = path.join(__dirname,DEFAULT_FIXTURE_CONFIG);
 
     var targetExists = fs.existsSync(local);
-    
     // ensure false
-    t.notOk(targetExists, 'a config file is not present');
+    t.notOk(targetExists, 'confirm a config file is not present');
     
     // run mongoose-fixture command to create config file
     process.exec('mongoose-fixture --generateConfig',function(err, stdout, stdin){
@@ -47,7 +45,14 @@ test('Test Generate Config BoilerPlate', function(t){
         var txtMatch = stdout.match(/Generating Fixture-Config/);
         //console.log('txt match ',txtMatch);
         t.ok(txtMatch, 'Success message received in generating config');
+
+        // do a file path check?
+        targetExists = fs.existsSync(local);
+        t.ok(targetExists, 'confirm a config file was generated');
+
         t.end();
     
     });
 });
+
+
