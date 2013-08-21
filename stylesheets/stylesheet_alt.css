@@ -1,11 +1,11 @@
 /*
- * ColorSchema influenced from -http://www.colourlovers.com/business/trends/branding/7887/Jimmys_Iced_Coffee 
+ *  ColorScheme influence -http://www.colourlovers.com/palette/3002704/red_dreamcatcher 
  */
 body {
   margin: 0;
   padding: 0;
-  background-color: #73726D;
-  color: #eaeaea;
+  background: #f0ca83;
+  color: #333;
   font: 16px;
   line-height: 1.5;
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
@@ -41,7 +41,8 @@ li {
 header {
   background: rgba(0, 0, 0, 0.1);
   width: 100%;
-  border-bottom: 1px dashed #97f3ef;
+  border-bottom: #335582;
+  border-bottom: 1px dotted #335582;
   padding: 20px 0;
   margin: 0 0 40px 0;
 }
@@ -52,7 +53,10 @@ header h1 {
   margin: 0 0 0 -40px;
   font-weight: bold;
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
-  color: #97f3ef;
+  color: #BD4729;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1),
+               0 0 5px rgba(181, 232, 83, 0.1),
+               0 0 10px rgba(181, 232, 83, 0.1);
   letter-spacing: -1px;
   -webkit-font-smoothing: antialiased;
 }
@@ -88,8 +92,11 @@ section img {
 h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
-  color: #97f3ef;
+  color: #bd4729;
   letter-spacing: -0.03em;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1),
+               0 0 5px rgba(181, 232, 83, 0.1),
+               0 0 10px rgba(181, 232, 83, 0.1);
 }
 
 #main_content h1 {
@@ -147,11 +154,11 @@ blockquote {
 }
 
 pre {
-  background: rgba(0, 0, 0, 0.9);
+  background: #ed9728;
   border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 10px;
   font-size: 14px;
-  color: #97f3ef;
+  color: #000;
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
@@ -178,8 +185,8 @@ td {
 hr {
   height: 0;
   border: 0;
-  border-bottom: 1px dashed #97f3ef;
-  color: #97f3ef;
+  border-bottom: 1px dashed #b5e853;
+  color: #b5e853;
 }
 
 /* Buttons
@@ -224,8 +231,7 @@ hr {
 */
 
 a {
-  color: #55c3dc;
-  text-shadow: 0 0 5px rgba(104, 182, 155, 0.2);
+  color: #335582;
 }
 
 /* Clearfix */
