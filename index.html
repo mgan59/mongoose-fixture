@@ -16,7 +16,7 @@
     <header>
       <div class="container">
         <h1>Mongoose-fixture</h1>
-        <h2>A bootstrap library to import javascript objects into mongodb using a series of raw json files</h2>
+        <h2>Mongoose-Fixture is a command-line and utility library to load static json arrays/documents into mongodb.</h2>
 
         <section id="downloads">
           <a href="https://github.com/mgan59/mongoose-fixture/zipball/master" class="btn">Download as .zip</a>
@@ -28,37 +28,128 @@
 
     <div class="container">
       <section id="main_content">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+        <h1>
+<a name="mongoose-fixture" class="anchor" href="#mongoose-fixture"><span class="octicon octicon-link"></span></a>Mongoose-Fixture</h1>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>Inspired from Django's data-fixtures and Ruby's rake but built for nodejs.  Mongoose-Fixture is a command-line and utility library to load static json arrays/documents into mongodb.  Ideal for working with the <a href="http://blog.mongodb.org/post/49262866911/the-mean-stack-mongodb-expressjs-angularjs-and">MEAN</a> stack. </p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<h2>
+<a name="why-would-i-use-it" class="anchor" href="#why-would-i-use-it"><span class="octicon octicon-link"></span></a>Why would I use it?</h2>
+
+<p>Installing Mongodb will give access to the <code>mongoimport</code> command, however that is for simple importing and not flexible as a workflow-tool. </p>
+
+<p>Mongoose-Fixture comes with the following features to improve developer workflow</p>
+
+<ul>
+<li>Project Configuration, organize documents collections into sets, for custom batch executions</li>
+<li>BoilerPlates, generate Schemas/Fixtures to reduce typing</li>
+<li>API can be used within other processes, a nodejs event-emitter</li>
+</ul><h1>
+<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h1>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Recommend global install as this package contains a bin command that can be used globally accepting configuration files</p>
+
+<pre><code>npm install -g mongoose-fixture
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p>In order to get started with Mongoose-Fixture we first must create our config-file and then define our fixtures/schemas.</p>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<h2>
+<a name="creating-a-configfile" class="anchor" href="#creating-a-configfile"><span class="octicon octicon-link"></span></a>Creating a ConfigFile</h2>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>Mongoose-Fixture cmd usage requires the creation of a config-file for each project.  This config file specifies where and how to load fixtures/schemas as well as the boiler-plate generators.</p>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<p>First you must create this config file, <code>cd</code> to your projects local-root directory.</p>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<pre><code>// creates a file ``mongoose-fixture-config.js`` in your working directory
+mongoose-fixture --generateConfig
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+// or you can define your own name
+mongoose-fixture --generateConfig='mf-config'
+</code></pre>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>A generated config file will contain several environment variables such as mongodb connection strings, default directories for <code>fixtures/</code> and <code>schemas</code>. And a single fixture-listing called <code>all</code>.  You will need to customize these for your project. </p>
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<p>By default <code>mongoose-fixture</code> will look for a config file in the local directory called <code>mongoose-fixture-config</code> if you have different file name or wish to use <code>mongoose-fixture</code> with a different config you can specifiy the config in the cmd</p>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<pre><code>mongoose-fixture --configFile='/project/outDoorCamper/mf-config'
+</code></pre>
+
+<h2>
+<a name="creating-our-fixturesschemas" class="anchor" href="#creating-our-fixturesschemas"><span class="octicon octicon-link"></span></a>Creating our Fixtures/Schemas</h2>
+
+<p>Once we have created our config file for our project we can now begin creating our fixtures/schemas - assuming you are fine with the default config paths and have created the directories.</p>
+
+<p>Once again we can generate boiler-plates for our schemas and fixtures</p>
+
+<p>First we will create a Schema, lets pretend we are building an ecommerece store so we generate a schema for our <code>Products</code></p>
+
+<pre><code>mongoose-fixture --generateSchema='ProductSchema'
+</code></pre>
+
+<p>This should create a file called <code>ProductSchema.js</code> in your <code>schemas/</code> project directory.</p>
+
+<p>Then we should create our corresponding data-fixture</p>
+
+<pre><code>mongoose-fixture --generateFixture='Products'
+</code></pre>
+
+<p>which will create a file <code>products.js</code> in the <code>fixtures/</code> directory.</p>
+
+<p>From here you should first edit your <code>ProductSchema.js</code> and create the schema you want based on the <a href="http://mongoosejs.com/docs/guide.html">mongoose-documentation</a>.</p>
+
+<p>Then you should edit your corresponding data-fixture to follow the defined schema.  Any field you add to your data-fixture objects that aren't part of the schema will be ignored when loaded into mongoDB.</p>
+
+<h2>
+<a name="updating-your-config-with-fixtureschema" class="anchor" href="#updating-your-config-with-fixtureschema"><span class="octicon octicon-link"></span></a>Updating your Config with Fixture/Schema</h2>
+
+<p>Inside of your config file you will need to add you newly created schema/fixture pairs to a FixtureListing.</p>
+
+<pre><code>// create our primary listing set
+var allFixtures = [{
+    itemName:'Products', 
+    schema:'ProductSchema',
+    data:'Products',
+    collection:'products'
+}];
+</code></pre>
+
+<p>You should now be all set to load your fixture data.</p>
+
+<h2>
+<a name="loading-fixtures-into-mongodb" class="anchor" href="#loading-fixtures-into-mongodb"><span class="octicon octicon-link"></span></a>Loading Fixtures into MongoDB</h2>
+
+<p>To interact with your fixtures/schemas you will need to use two parameter flags.</p>
+
+<ul>
+<li>--fixture listing
+** defines which collection of fixtures you want the <code>method</code> to use</li>
+<li>method [--add, --remove, --reset] to be defined.
+** reset first does --remove and then does --add behind the scenes</li>
+</ul><p>examples assume you have <code>mongoose-fixture-config.js</code> in local dir:</p>
+
+<pre><code>//  loads fixture 'all' and just adds the documents
+mongoose-fixture --fixture='all' --add
+
+// removes only the documents from the collections define in the fixture 'stores' in the config
+mongoose-fixture --fixture='stores' --remove 
+
+// can run fixtures for an entire different project using a different command
+// using the reset would drop all the documents from the collections in fixture catalog and then reload them
+mongoose-fixture --fixture='catalog' --reset
+</code></pre>
+
+<h1>
+<a name="new-development--contribution" class="anchor" href="#new-development--contribution"><span class="octicon octicon-link"></span></a>New Development / Contribution</h1>
+
+<ul>
+<li>more tests</li>
+<li>create a grunt hook, consider supporting own bin command?</li>
+<li>more documentation (specifically examples)</li>
+</ul>
       </section>
     </div>
 
