@@ -26,8 +26,29 @@ var SCHEMA_PRESENCE = 'ProductSchema';
 var SCHEMA_PRESENCE_FILE = SCHEMA_PRESENCE+'.js';
 
 // Fixture/Schema Presence Mock data
-var FIXTURE_MOCK = 'Products-Mock.js';
-var SCHEMA_MOCK = 'ProductSchema-Mock.js';
+var FIXTURE_MOCK = 'ProductsMock.js';
+var SCHEMA_MOCK = 'ProductSchemaMock.js';
+
+// CLI Stubs
+var CLI_MOCK = 'mongoose-fixture --configFile='+FIXTURE_CONFIG_MOCK_FILE+' ';  
+
+///////////////////////
+// Connect to Mongo
+///////////////////////
+var mongoose = require('mongoose');
+// get database name from config :)
+var mongoSettings = {
+    'host':'localhost',
+    'port':27999,
+    'dbname':'mongoose-fixture-test'
+};
+
+var mongoConnectionString = mongoSettings.host+':'+mongoSettings.port+'/'+mongoSettings.dbname; 
+mongoose.connect('mongodb://'+mongoConnectionString);
+
+// get our Mock Product schema loaded so we can reset collection and do query later
+var mongooseProductSchemaRef = require('./schemas/ProductSchemaMock')(mongoose);
+var mongooseProductModel = mongoose.model('Product', mongooseProductSchemaRef);
 
 
 ///////////////////////////
@@ -51,6 +72,13 @@ var preTestCleanup = function(){
             fs.unlinkSync(presenceFiles[ctr]);
         }
     }
+    
+    //console.log(mongoose.connection);
+    // drop the mongoose-fixture-test collection 'products'
+    mongoose.connection.collections['products'].drop( function(err) {
+        console.log('collection dropped');
+    });
+    
 
 }();  //<----- self-invoking on load
 
@@ -150,9 +178,75 @@ test('Test Generate Schema BoilerPlate', function(t){
 ///////////////////////////////
 //  Test CLI Mock Data insertion
 ///////////////////////////////
+test('Test that --fixture flag requires (add|reset|delete)', function(t){
+    t.plan(1);
 
+    // use the fixture-config-mock to actually generate a fixture file
+    var cmd = CLI_MOCK+' --fixture="all"';
+    process.exec(cmd, function(err, stdout, stdin){
+        var txtMatch = stdout.match(/Required fixture action/);
+        t.ok(txtMatch, 'Confirmed missing fixture action throws cli message');
+        t.end();
+    });
+          
+});
 
+test('Test Products-Mock fixture data using --add for first time', function(t){
+    t.plan(2);
 
+    // use the fixture-config-mock to actually generate a fixture file
+    var cmd = CLI_MOCK+' --fixture="all" --add';
+    process.exec(cmd, function(err, stdout, stdin){
 
+        // verify stdin message for fixtures loaded
+        var txtMatch = stdout.match(/Fixtures loaded, closing db/);
+        t.ok(txtMatch, 'Fixture loaded confirmed from stdin');
+        
+        mongooseProductModel.find({}, function(err, products){
+            t.ok((products.length === 2), 'Checking Mongo collection contains '+products.length+' product(s)');
+            t.end();
+        });
+        
+    });
+          
+});
 
+test('Test Products-Mock fixture data using --add for second time', function(t){
+    t.plan(2);
 
+    // use the fixture-config-mock to actually generate a fixture file
+    var cmd = CLI_MOCK+' --fixture="all" --add';
+    process.exec(cmd, function(err, stdout, stdin){
+
+        // verify stdin message for fixtures loaded
+        var txtMatch = stdout.match(/Fixtures loaded, closing db/);
+        t.ok(txtMatch, 'Fixture loaded confirmed from stdin');
+        
+        mongooseProductModel.find({}, function(err, products){
+            t.ok((products.length === 4), 'Checking Mongo collection contains '+products.length+' product(s)');
+            t.end();
+        });
+        
+    });
+          
+});
+
+test('Test Products-Mock fixture data using --reset', function(t){
+    t.plan(2);
+
+    // use the fixture-config-mock to actually generate a fixture file
+    var cmd = CLI_MOCK+' --fixture="all" --reset';
+    process.exec(cmd, function(err, stdout, stdin){
+
+        // verify stdin message for fixtures loaded
+        var txtMatch = stdout.match(/Fixtures loaded, closing db/);
+        t.ok(txtMatch, 'Fixture loaded confirmed from stdin');
+        
+        mongooseProductModel.find({}, function(err, products){
+            t.ok((products.length === 2), 'Checking Mongo collection contains '+products.length+' product(s)');
+            t.end();
+        });
+        
+    });
+          
+});

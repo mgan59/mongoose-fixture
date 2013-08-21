@@ -33,9 +33,9 @@ var allFixtures = [
         // general name used in output log
         itemName:'Product', 
         // name of the schema file (without the .js)
-        schema:'ProductSchema', 
+        schema:'ProductSchemaMock', 
         // name of the data-fixture file (without the .js)
-        data:'ProductData',
+        data:'ProductsMock',
         // collection name in for removal process
         collection:'products'
     },
