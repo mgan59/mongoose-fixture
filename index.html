@@ -34,17 +34,17 @@
 <h2>
 <a name="what-is-mongoose-fixture" class="anchor" href="#what-is-mongoose-fixture"><span class="octicon octicon-link"></span></a>What is Mongoose-Fixture?</h2>
 
-<p>Mongoose-Fixture is a data management and workflow tool that enables developers to easily organize and import data into mongodb from both a CLI and nodejs API.</p>
+<p>Mongoose-Fixture is a data management and workflow tool that enables developers to easily organize and import data into mongodb from both a CLI and nodes API.</p>
 
 <h2>
 <a name="why-should-i-use-mongoose-fixture-over-mongoimport" class="anchor" href="#why-should-i-use-mongoose-fixture-over-mongoimport"><span class="octicon octicon-link"></span></a>Why should I use Mongoose-Fixture over mongoimport</h2>
 
-<p>Importing data with <code>mongoimport</code> is easy if you have a single json data file.  But if you have several json data files each with sub-document dependencies, validation, and simply organizing the data becomes difficult. Mongoose-Fixture is designed to solve these issues.</p>
+<p>Importing data with <code>mongoimport</code> is easy if you have a handful of simple json data files.  But if you have several complex json data files each with sub-document dependencies and validation then organizing the data becomes difficult. Mongoose-Fixture is designed to solve those issues.</p>
 
 <h2>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-<p>First you need to install the Mongoose-Fixture global so you have access to the <code>bin</code> CLI.  </p>
+<p>First you need to install the Mongoose-Fixture globally so you have access to the <code>bin</code> CLI.  </p>
 
 <pre><code>npm install -g mongoose-fixture
 </code></pre>
@@ -52,7 +52,7 @@
 <p>Next when you create a project you will want to install mongoose-fixture locally as well.</p>
 
 <pre><code>cd your_project/
-  npm init
+npm init
 npm install mongoose-fixture --save
 </code></pre>
 
@@ -61,12 +61,12 @@ npm install mongoose-fixture --save
 <h2>
 <a name="configuring-mongoose-fixture" class="anchor" href="#configuring-mongoose-fixture"><span class="octicon octicon-link"></span></a>Configuring Mongoose-Fixture</h2>
 
-<p>I'll now walk you through configuring mongoose-fixture for an example project.  I've created a separate working repository with all the code samples.</p>
+<p>I'll now walk you through configuring mongoose-fixture for an example project.  I've created a separate working repository with all the <a href="https://github.com/mgan59/mongoose-fixture-example/">code samples</a> for you to view/follow along.</p>
 
 <h3>
 <a name="generate-a-mongoose-fixture-config" class="anchor" href="#generate-a-mongoose-fixture-config"><span class="octicon octicon-link"></span></a>Generate a Mongoose-Fixture-Config</h3>
 
-<p>First step in using Mongoose-Fixture one must create a mongoose-config file similarly to grunt.  This config file sets up file-paths, mongodb authentication, and most importantly the fixture/schema organization listings.</p>
+<p>First step in using Mongoose-Fixture one must create a mongoose-config file similarly to <a href="http://gruntjs.com/">grunt</a>.  This config file sets up file-paths, mongodb authentication, and most importantly the fixture/schema organization listings.</p>
 
 <pre><code># from inside your project folder
 mongoose-fixture --generateConfig
@@ -92,7 +92,7 @@ Generating Fixture-Config -&gt; /your_project/mongoose-fixture-config.js
 
 <p>Regardless if you keep or change the file paths you will need to create those folders (<code>schemas</code> and <code>fixtures</code>) in your local directory.</p>
 
-<p>The remaining section of the config file is where you define the <code>FixturePackages</code>.  The <code>FixturePackages</code> are how you organize json fixtures into packages so you can easily add/remove/reset groups of fixtures.  I'll delve further into packages later, but for now know that you define them here.  By default an 'all' package is provided so you can easily get started.</p>
+<p>The remaining section of the config file is where you define the <code>FixtureListings</code>.  The <code>FixtureListings</code> are how you organize json fixtures into packages so you can easily add/remove/reset groups of fixtures.  I'll delve further into packages later, but for now know that you define them here.  By default an 'all' listing is provided so you can easily get started.</p>
 
 <h3>
 <a name="generate-a-fixtureschema" class="anchor" href="#generate-a-fixtureschema"><span class="octicon octicon-link"></span></a>Generate a Fixture/Schema</h3>
@@ -118,14 +118,14 @@ mongoose-fixture --generateSchema='ProductSchema'
 Generating Schema -&gt; /your_project/schemas/ProductSchema.js
 </code></pre>
 
-<p>Best place to start is to open the <code>ProductSchema.js</code> file and first define the schema for your product model.  You can view an example of the <a href="https://github.com/mgan59/mongoose-fixture-example/blob/master/schemas/ProductSchema.js">completed version</a></p>
+<p>Best place to start is to open the <a href="https://github.com/mgan59/mongoose-fixture-example/blob/master/schemas/ProductSchema.js">ProductSchema.js</a> file and first define the schema for your product model.</p>
 
-<p>Next we should start adding our actual products to the fixture file so open the <code>fixtures/Products.js</code>.  You can view an example of the <a href="https://github.com/mgan59/mongoose-fixture-example/blob/master/fixtures/Products.js">completed version</a></p>
+<p>Next we should start adding our actual products to the fixture file so open the <a href="https://github.com/mgan59/mongoose-fixture-example/blob/master/fixtures/Products.js">fixtures/Products.js</a>.</p>
 
 <h3>
 <a name="running-the-fixture-import" class="anchor" href="#running-the-fixture-import"><span class="octicon octicon-link"></span></a>Running the Fixture Import</h3>
 
-<p>Now that we have a fixture/schema we should update our config file by adding the set to our <code>FixturePackages</code> 'all'.  You can view the <a href="https://github.com/mgan59/mongoose-fixture-example/blob/master/mongoose-fixture-config.js">completed version</a></p>
+<p>Now that we have a fixture/schema we should update our config file by adding the set to our <a href="https://github.com/mgan59/mongoose-fixture-example/blob/master/mongoose-fixture-config.js">Fixture Listings</a> <code>all</code>.</p>
 
 <p>Finally, Time to run the fixture insert command <strong>make sure your mongodb server is running</strong></p>
 
@@ -177,7 +177,7 @@ switched to db fixture-test
 
 <p>Or if you have the use case where you need to add and remove you can do it using the --reset </p>
 
-<pre><code>mongoose-fixture --fixture='all' --reset
+<pre><code>mongoose-fixture --fixture='all' --reset``
 </code></pre>
       </section>
     </div>
