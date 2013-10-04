@@ -4,19 +4,17 @@
  *
  *  
  */
+var mongoose = require('mongoose');
 
-module.exports = function(mongoose){
-        
-    var exportSchema = mongoose.Schema({
-        /* 
-           this is an example, fillin with
-           your own schema data
-        */
-        _id:{type:String},
-        name:{type:String},
-        tags:{type:Array},
-        score:{type:Number}
-    });
+var schema = mongoose.Schema({
+    /* 
+       this is an example, fillin with
+       your own schema data
+    */
+    _id:{type:String},
+    name:{type:String},
+    tags:{type:Array},
+    score:{type:Number}
+});
 
-    return exportSchema;
-};
+module.exports = mongoose.model('Product', schema);
