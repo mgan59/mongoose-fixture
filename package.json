@@ -1,7 +1,7 @@
 {
   "name": "mongoose-fixture",
   "preferGlobal": true,
-  "version": "0.2.2",
+  "version": "0.3.0",
   "author": "Morgan Craft (http://morgancraft.com)",
   "description": "Static Fixture Loader with Mongoose Schema",
   "main": "./lib/index.js",
@@ -25,7 +25,7 @@
     "lodash":"1.2.1"
   },
   "scripts":{
-    "test":"tap ./test"
+    "test":"node test/command.js"
   },
   "license": "MIT",
   "engines": {
