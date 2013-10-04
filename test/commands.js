@@ -10,7 +10,7 @@ var process = require('child_process');
 var path = require('path');
 // include isaacs node-tap test harness
 var test = require('tap').test;
-
+console.log('//\n// Tests Starting \n//');
 ///////////////////////////
 // CONSTANTS for testing 
 ///////////////////////////
@@ -46,10 +46,10 @@ var mongoSettings = {
 var mongoConnectionString = mongoSettings.host+':'+mongoSettings.port+'/'+mongoSettings.dbname; 
 mongoose.connect('mongodb://'+mongoConnectionString);
 
-// get our Mock Product schema loaded so we can reset collection and do query later
-var mongooseProductSchemaRef = require('./schemas/ProductSchemaMock')(mongoose);
-var mongooseProductModel = mongoose.model('Product', mongooseProductSchemaRef);
-
+// get our Mock Product schema loaded so we can reset 
+// collection and do query later
+var mongooseProductSchemaRef = require('./schemas/ProductSchemaMock')();
+var mongooseProductModel =  mongoose.model('Product');
 
 ///////////////////////////
 // File Generator Cleanup 
@@ -244,7 +244,12 @@ test('Test Products-Mock fixture data using --reset', function(t){
         
         mongooseProductModel.find({}, function(err, products){
             t.ok((products.length === 2), 'Checking Mongo collection contains '+products.length+' product(s)');
+            
+            // disconnect mongoose
+            mongoose.disconnect();
             t.end();
+
+
         });
         
     });
