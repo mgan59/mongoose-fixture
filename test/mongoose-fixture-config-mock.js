@@ -24,25 +24,41 @@ var fixtureConfig = FixtureConfig({
         dataFixturePath:__dirname+'/fixtures/'
     }
 });
-    
+
 
 // Create a Listing of fixtures
 var allFixtures = [
     // just an example of a fixture listing
     {
         // general name used in output log
-        itemName:'Product', 
+        itemName:'Product',
         // name of the schema file (without the .js)
-        schema:'ProductSchemaMock', 
+        schema:'ProductSchemaMock',
         // name of the data-fixture file (without the .js)
         data:'ProductsMock',
         // collection name in for removal process
         collection:'products'
     },
 ];
-    
+
+ // Create a Listing of fixtures
+var brokenRemoveFixtures = [
+    // just an example of a fixture listing
+    {
+        // general name used in output log
+        itemName:'Product',
+        // name of the schema file (without the .js)
+        schema:'ProductSchemaMock',
+        // name of the data-fixture file (without the .js)
+        data:'ProductsMock',
+        // collection name in for removal process
+        collection:'prdocuto'
+    },
+];
+
 // load fixture listings
-fixtureConfig.fixtureListings.set('all', allFixtures); 
+fixtureConfig.fixtureListings.set('all', allFixtures);
+fixtureConfig.fixtureListings.set('brokenRemove', brokenRemoveFixtures);
 
 // export the config
 module.exports = fixtureConfig;

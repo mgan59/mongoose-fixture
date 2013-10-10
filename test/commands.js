@@ -12,7 +12,7 @@ var path = require('path');
 var test = require('tap').test;
 
 ///////////////////////////
-// CONSTANTS for testing 
+// CONSTANTS for testing
 ///////////////////////////
 // used to test the presence of the config
 var FIXTURE_CONFIG_PRESENCE_FILE = 'mongoose-fixture-config.js';
@@ -30,7 +30,7 @@ var FIXTURE_MOCK = 'ProductsMock.js';
 var SCHEMA_MOCK = 'ProductSchemaMock.js';
 
 // CLI Stubs
-var CLI_MOCK = 'mongoose-fixture --configFile='+FIXTURE_CONFIG_MOCK_FILE+' ';  
+var CLI_MOCK = 'mongoose-fixture --configFile='+FIXTURE_CONFIG_MOCK_FILE+' ';
 
 ///////////////////////
 // Connect to Mongo
@@ -43,8 +43,13 @@ var mongoSettings = {
     'dbname':'mongoose-fixture-test'
 };
 
-var mongoConnectionString = mongoSettings.host+':'+mongoSettings.port+'/'+mongoSettings.dbname; 
+var mongoConnectionString = mongoSettings.host+':'+mongoSettings.port+'/'+mongoSettings.dbname;
 mongoose.connect('mongodb://'+mongoConnectionString);
+
+var mongoDisconnect = function(mongoose){
+    console.log('Tests over so disconnect mongoose');
+    mongoose.disconnect()
+};
 
 // get our Mock Product schema loaded so we can reset collection and do query later
 var mongooseProductSchemaRef = require('./schemas/ProductSchemaMock')(mongoose);
@@ -52,7 +57,7 @@ var mongooseProductModel = mongoose.model('Product', mongooseProductSchemaRef);
 
 
 ///////////////////////////
-// File Generator Cleanup 
+// File Generator Cleanup
 ///////////////////////////
 var preTestCleanup = function(){
     /*
@@ -72,13 +77,13 @@ var preTestCleanup = function(){
             fs.unlinkSync(presenceFiles[ctr]);
         }
     }
-    
+
     //console.log(mongoose.connection);
     // drop the mongoose-fixture-test collection 'products'
     mongoose.connection.collections['products'].drop( function(err) {
         console.log('collection dropped');
     });
-    
+
 
 }();  //<----- self-invoking on load
 
@@ -88,17 +93,17 @@ var preTestCleanup = function(){
 ////////////////////////////////////////
 test('Test Generate Config BoilerPlate', function(t){
     t.plan(4);
-    
+
     // do file check
     var local = path.join(__dirname, FIXTURE_CONFIG_PRESENCE_FILE);
 
     var targetExists = fs.existsSync(local);
     // ensure false
     t.notOk(targetExists, 'confirm a config file is not present');
-    
+
     // run mongoose-fixture command to create config file
     process.exec('mongoose-fixture --generateConfig',function(err, stdout, stdin){
-        t.notOk(err, 'No process errors for --generateConfig'); 
+        t.notOk(err, 'No process errors for --generateConfig');
         // TODO standardize stdout from commands to we dont need to regex and can match
         var txtMatch = stdout.match(/Generating Fixture-Config/);
         //console.log('txt match ',txtMatch);
@@ -109,7 +114,7 @@ test('Test Generate Config BoilerPlate', function(t){
         t.ok(targetExists, 'confirmed a config file was generated');
 
         t.end();
-    
+
     });
 });
 
@@ -122,12 +127,12 @@ test('Test Generate Fixture BoilerPlate', function(t){
     var local = path.join(__dirname, 'fixtures', FIXTURE_PRESENCE_FILE);
     var targetExists = fs.existsSync(local);
     t.notOk(targetExists, 'confirmed '+FIXTURE_PRESENCE_FILE+' is not present');
-    
+
     // use the fixture-config-mock to actually generate a fixture file
     var cmd = "mongoose-fixture --configFile='"+FIXTURE_CONFIG_MOCK_FILE+"' --generateFixture='"+FIXTURE_PRESENCE+"'";
-    
+
     process.exec(cmd,function(err, stdout, stdin){
-        t.notOk(err, 'No process errors for --generateConfig'); 
+        t.notOk(err, 'No process errors for --generateConfig');
         // TODO standardize stdout from commands to we dont need to regex and can match
         var txtMatch = stdout.match(/Generating DataFixture/);
         //console.log('txt match ',txtMatch);
@@ -138,7 +143,7 @@ test('Test Generate Fixture BoilerPlate', function(t){
         t.ok(targetExists, 'confirmed a fixture file was generated');
 
         t.end();
-    
+
     });
 
 
@@ -151,12 +156,12 @@ test('Test Generate Schema BoilerPlate', function(t){
     var local = path.join(__dirname, 'schemas', SCHEMA_PRESENCE_FILE);
     var targetExists = fs.existsSync(local);
     t.notOk(targetExists, 'confirmed '+SCHEMA_PRESENCE_FILE+' is not present');
-    
+
     // use the fixture-config-mock to actually generate a fixture file
     var cmd = "mongoose-fixture --configFile='"+FIXTURE_CONFIG_MOCK_FILE+"' --generateSchema='"+SCHEMA_PRESENCE+"'";
-    
+
     process.exec(cmd,function(err, stdout, stdin){
-        t.notOk(err, 'No process errors for --generateConfig'); 
+        t.notOk(err, 'No process errors for --generateConfig');
         // TODO standardize stdout from commands to we dont need to regex and can match
         var txtMatch = stdout.match(/Generating Schema/);
         //console.log('txt match ',txtMatch);
@@ -167,7 +172,7 @@ test('Test Generate Schema BoilerPlate', function(t){
         t.ok(targetExists, 'confirmed a schema file was generated');
 
         t.end();
-    
+
     });
 
 });
@@ -188,7 +193,7 @@ test('Test that --fixture flag requires (add|reset|delete)', function(t){
         t.ok(txtMatch, 'Confirmed missing fixture action throws cli message');
         t.end();
     });
-          
+
 });
 
 test('Test Products-Mock fixture data using --add for first time', function(t){
@@ -201,15 +206,17 @@ test('Test Products-Mock fixture data using --add for first time', function(t){
         // verify stdin message for fixtures loaded
         var txtMatch = stdout.match(/Fixtures loaded, closing db/);
         t.ok(txtMatch, 'Fixture loaded confirmed from stdin');
-        
+
+        //check that there are 2 items
         mongooseProductModel.find({}, function(err, products){
             t.ok((products.length === 2), 'Checking Mongo collection contains '+products.length+' product(s)');
             t.end();
         });
-        
+
     });
-          
+
 });
+
 
 test('Test Products-Mock fixture data using --add for second time', function(t){
     t.plan(2);
@@ -221,14 +228,36 @@ test('Test Products-Mock fixture data using --add for second time', function(t){
         // verify stdin message for fixtures loaded
         var txtMatch = stdout.match(/Fixtures loaded, closing db/);
         t.ok(txtMatch, 'Fixture loaded confirmed from stdin');
-        
+
+        // check there are now 4 items
         mongooseProductModel.find({}, function(err, products){
             t.ok((products.length === 4), 'Checking Mongo collection contains '+products.length+' product(s)');
             t.end();
         });
-        
+
     });
-          
+
+});
+
+/*
+ *  Make sure that if a user provides a busted collection name, that an error is thrown in removeal
+ *  also makes sure that during a reset that the remove phase is doings its job
+ */
+test('Test BrokenRemove Products-Mock fixture data using --remove', function(t){
+    t.plan(1);
+
+    // use the fixture-config-mock to actually generate a fixture file
+    var cmd = CLI_MOCK+' --fixture="brokenRemove" --remove';
+    process.exec(cmd, function(err, stdout, stdin){
+        // verify stdin message for broken fixture removal
+        var txtMatch = stdout.match(/Error no collection [\w]+ exists/);
+        t.ok(txtMatch, 'Broken Fixture removal confirmed error from stdin');
+
+        // end test, till we determine how the rest of it should work
+        t.end();
+
+    });
+
 });
 
 test('Test Products-Mock fixture data using --reset', function(t){
@@ -241,12 +270,14 @@ test('Test Products-Mock fixture data using --reset', function(t){
         // verify stdin message for fixtures loaded
         var txtMatch = stdout.match(/Fixtures loaded, closing db/);
         t.ok(txtMatch, 'Fixture loaded confirmed from stdin');
-        
+
         mongooseProductModel.find({}, function(err, products){
             t.ok((products.length === 2), 'Checking Mongo collection contains '+products.length+' product(s)');
+            // last test so disconnect mongoose
+            mongoDisconnect(mongoose);
             t.end();
         });
-        
+
     });
-          
+
 });
