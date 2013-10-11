@@ -1,3 +1,4 @@
 node_modules/*
 *.swp
 test/mongoose-fixture-config.js
+*.un~
