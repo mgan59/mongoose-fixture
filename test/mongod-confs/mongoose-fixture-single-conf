@@ -1,7 +1,7 @@
 bind_ip = 127.0.0.1
 port = 27999
 quiet = true
-dbpath = mongo_test_db
-logpath = mongo_test_db/logfile
+dbpath = mongo_test_single_db
+logpath = mongo_test_single_db/logfile
 logappend = true
 journal = true
