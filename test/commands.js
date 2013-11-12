@@ -324,6 +324,7 @@ test('Test Products-Object-Literal-Mock fixture --fixture=objlit --add'.testDefi
 });
 // do not breakup the follow two test, unless you understand why they are grouped ^^
 
+/* commenting out test so I can make sure there is data in mongo, this will reset it all */
 test('Test Products-Mock fixture data using --reset'.testDefinition, function(t){
     t.plan(2);
 
@@ -346,3 +347,4 @@ test('Test Products-Mock fixture data using --reset'.testDefinition, function(t)
     });
 
 });
+/* */
