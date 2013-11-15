@@ -14,31 +14,29 @@ var FixtureConfig = require('../lib').FixtureConfig;
 // Create our fixture config with defined
 // mongo-connection and file paths
 var fixtureConfig = FixtureConfig({
-    /* 
+    /* */
     mongoConnection:{
         'host':'localhost',
         'port':'27999',
         'dbname':'mongoose-fixture-test'
-    },
-    */
+    }
     /* */
-    mongoConnection:{
+    /*  Multi Node connection/writing test harness
+    , mongoConnection:{
         servers:[
             {
                 'host':'localhost',
-                'port':'27910'
-            }
-/*,
+                'port':'27999'
+            },
             {
                 'host':'localhost',
                 'port':'27020'
             }
-            */
         ],
         'dbname':'mongoose-fixture-test'
-    },
+    }
     /* */
-    paths:{
+    , paths:{
         schemaPath:__dirname+'/schemas/',
         dataFixturePath:__dirname+'/fixtures/'
     }
