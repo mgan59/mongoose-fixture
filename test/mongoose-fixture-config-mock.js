@@ -26,12 +26,14 @@ var fixtureConfig = FixtureConfig({
         servers:[
             {
                 'host':'localhost',
-                'port':'27999'
-            },
+                'port':'27910'
+            }
+/*,
             {
                 'host':'localhost',
                 'port':'27020'
             }
+            */
         ],
         'dbname':'mongoose-fixture-test'
     },
