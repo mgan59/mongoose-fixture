@@ -1,7 +1,14 @@
 # Mongoose-Fixture Changelog
 
 
+## Release 0.2.4
+
+Last release for the 0.2.x line as 0.3.0 will have breaking changes in the data-fixture method signature
+
+ * added better error messaging for the `--remove` operation for importing with cli
+
 ## Release 0.2.3
+
  * `--remove`` loader method now checks that collections exists and will throw exception and output to stdout works with --reset as well.
  ** added test for this feature.
  * added `colors` npm module from marak, color coded the tap tests.
