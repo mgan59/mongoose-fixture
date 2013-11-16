@@ -2,15 +2,34 @@
 
 Tests are built using Isaac node-tap and are simple assertions
 
+## Setting up Test
+
+There is a chance you may need to do some additional work to get the tests to run
+
+First you may need to create logfile in each mongodb path
+
+    touch mongod-confs/mongo_test_single_a_db/logfile
+    touch mongod-confs/mongo_test_single_b_db/logfile
+
 ## Running Tests
 
-### Run the mongodb test db
-First run the mongod test db from the ``mongoose-fixture/tests`` directory
+### Run the mongodb test dbs
 
-    mongod --port 27999 --journal --logpath mongo_test_db/logfile --dbpath mongo_test_db/data
+There are several `conf` files in the `test/mongod-confs/` folder.  First there are two stand alone single mongod nodes and then a replica-set.
 
-Add the --fork if you want to run as a process, otherwise this will leave a mongo window open
-I do this personally so I don't have yet another mongo instance in a background process
+Most of the tests are written for the stand alone single mongod nodes and those are the ones you will need in order to run the test suite.
+
+    # run the single mongod servers
+    mongod -f mongod-confs/mongoose-fixture-single-a-conf
+    mongod -f mongod-confs/mongoose-fixture-single-b-conf
+
+    # run the replica set servers
+    mongod -f mongoose-fixture-replica-a-conf
+    mongod -f mongoose-fixture-replica-b-conf
+    mongod -f mongoose-fixture-replica-c-conf
+
+The single node mongod run as forked instances on port 27999 and 27998 respectively.  To shut down once started you need to connect with `mongo`
+and issue a shutdown using `db.shutdownServer()`
 
 ### Run the tests
 

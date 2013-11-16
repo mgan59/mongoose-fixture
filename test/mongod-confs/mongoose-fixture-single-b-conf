@@ -1,0 +1,8 @@
+bind_ip = 127.0.0.1
+port = 27998
+fork = true
+quiet = true
+dbpath = mongo_test_single_b_db
+logpath = mongo_test_single_b_db/logfile
+logappend = true
+journal = true

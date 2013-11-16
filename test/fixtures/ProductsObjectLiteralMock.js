@@ -7,7 +7,7 @@
 // @callback must be returned
 // expects (err, object)
 // object can be an array of data-documents, or a kwarg['dataFixtures']
-module.exports = function(mongoose, callback){
+module.exports = function(mongoose, conn, callback){
 
     // standard callback error
     var error = null;
