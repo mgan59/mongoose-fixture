@@ -1,0 +1,9 @@
+bind_ip = 127.0.0.1
+port = 27910
+quiet = true
+dbpath = mongo_test_replica_a_db
+logpath = mongo_test_replica_a_db/logfile
+logappend = true
+journal = true
+replSet = mgoose-replica
+master = true

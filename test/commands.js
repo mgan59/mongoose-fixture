@@ -27,7 +27,7 @@ colors.setTheme({
 var FIXTURE_CONFIG_PRESENCE_FILE = 'mongoose-fixture-config.js';
 // used as a mock fixture
 var FIXTURE_CONFIG_MOCK_FILE = 'mongoose-fixture-config-mock.js';
-
+var FIXTURE_MULTINODE_CONFIG_MOCK_FILE = 'mongoose-fixture-multinode-config-mock.js';
 // SCHEMA/FIXTURE Presence
 // These are the ones that get generated/deleted on each test run
 var FIXTURE_PRESENCE = 'Products';
@@ -42,6 +42,8 @@ var SCHEMA_MOCK = 'ProductSchemaMock.js';
 
 // CLI Stubs
 var CLI_MOCK = 'mongoose-fixture --configFile='+FIXTURE_CONFIG_MOCK_FILE+' ';
+var CLI_MULTI_MOCK = 'mongoose-fixture --configFile='+FIXTURE_MULTINODE_CONFIG_MOCK_FILE+' ';
+
 
 ///////////////////////
 // Connect to Mongo
@@ -307,9 +309,8 @@ test('Test Products-Object-Literal-Mock fixture --fixture=objlit --add'.testDefi
     // use the fixture-config-mock to actually generate a fixture file
     var cmd = CLI_MOCK+' --fixture="objlit" --add';
     process.exec(cmd, function(err, stdout, stdin){
-
         // verify stdout message for fixtures loaded
-        var txtMatch = stdout.match(/Fixtures Loaded/);
+        var txtMatch = stdout.match(/Fixtures Loaded on \(localhost:27999\)/);
         t.ok(txtMatch, 'Fixture loaded confirmed from stdout'.testOutput);
         
         // check there are now 3 items
@@ -324,6 +325,7 @@ test('Test Products-Object-Literal-Mock fixture --fixture=objlit --add'.testDefi
 });
 // do not breakup the follow two test, unless you understand why they are grouped ^^
 
+/* commenting out test so I can make sure there is data in mongo, this will reset it all */
 test('Test Products-Mock fixture data using --reset'.testDefinition, function(t){
     t.plan(2);
 
@@ -339,10 +341,43 @@ test('Test Products-Mock fixture data using --reset'.testDefinition, function(t)
             var msg = 'Checking Mongo collection contains '+products.length+' product(s)';
             t.ok((products.length === 2), msg.testOutput);
             // last test so disconnect mongoose
-            mongoDisconnect(mongoose);
+            //mongoDisconnect(mongoose);
             t.end();
         });
 
     });
 
 });
+
+/*
+ *  This is the test for the multi node instances, comment out if you don't want to run it every time
+ */
+/* */
+test('Test Mulitnode Products-Mock fixture data using --add'.testDefinition, function(t){
+    t.plan(2);
+
+    // use the fixture-config-mock to actually generate a fixture file
+    var cmd = CLI_MULTI_MOCK+' --fixture="big" --add';
+    process.exec(cmd, function(err, stdout, stdin){
+        /*
+        *  This test will work differently than the others since we need to check two mongo instaces
+        *  for data and we don't have the proper scaffolding to drop the dbs and recreate
+        *  so just check to ensure that 'Fixtures Loaded on (host:port) exists for the specified instances
+        *
+        */
+        // verify stdin message for fixtures loaded
+        var txtMatchOne = stdout.match(/Fixtures Loaded on \(localhost:27999\)/);
+        var txtMatchTwo = stdout.match(/Fixtures Loaded on \(localhost:27998\)/);
+        t.ok(txtMatchOne, 'Fixture loaded confirmed from stdout for localhost:27999'.testOutput);
+        t.ok(txtMatchTwo, 'Fixture loaded confirmed from stdout for localhost:27998'.testOutput);
+
+
+        // last test and we don't need mongoose to check anything so disconnect now
+        mongoDisconnect(mongoose);
+        t.end();
+
+    });
+
+});
+/* */
+

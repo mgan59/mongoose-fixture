@@ -1,6 +1,17 @@
 # Mongoose-Fixture Changelog
 
 
+## Release 0.3.0
+
+The mongoose/mongo connection was adjusted to use `mongoose.createConnection` instead of a direct call to `mongoose.connect` this allows the usage of multiple mongo nodes.  These can be configured in the `mongoose-fixture-config.js`.  Backwards compatibility was maintained for single connections.  However, with the usage of `createConnect` a mongo-native db instance is created and needs to be passed around so that the bound models can be accessed.  Before the models could be fetched directly from the mongoose singleton but that is no longer supported.
+
+ * `createConnection` now utilized
+ * support for multiple hosts in `mongoose-fixture-config`
+ * some more documentation
+ * tests added for multiple nodes
+ * test mongo conf files adjusted, now have replica support and multiple-mongo nodes
+
+
 ## Release 0.2.4
 
 Last release for the 0.2.x line as 0.3.0 will have breaking changes in the data-fixture method signature
