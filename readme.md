@@ -12,6 +12,19 @@ Mongoose-Fixture comes with the following features to improve developer workflow
 * BoilerPlates, generate Schemas/Fixtures to reduce typing
 * API can be used within other processes, a nodejs event-emitter
 
+# Migrating to Release 0.3.0
+
+There were api adjustments moving from version 0.2.x to 0.3.0, specifically within your data-fixtures.  In order to support the new 0.3.0 release you need to adjust the method signature in all your data fixtures.
+    
+    // 0.2.x data fixture method signature
+    module.exports = function(mongoose, callback){ 
+        // function body
+    };
+
+    // new 0.3.0 data fixture method signature
+    module.exports = function(mongoose, conn, callback){
+        // function body
+    };
 
 # Getting Started
 
