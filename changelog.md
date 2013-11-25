@@ -1,5 +1,12 @@
 # Mongoose-Fixture Changelog
 
+## Release 0.3.1
+
+Was decided that `conn` should also be passed into the schema for a given fixture.  This allows for the binding of the model and schema into the connection within the schema file.  This is done by certain projects and was implemented to facilitate those developers.
+
+* `conn` now passed into a mongoose-schema
+* Updated boiler templates
+* Updated tests
 
 ## Release 0.3.0
 
