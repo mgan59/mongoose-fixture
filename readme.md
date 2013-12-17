@@ -37,3 +37,4 @@ Read the [documentation guide](http://mgan59.github.io/mongoose-fixture/) for a 
 * more documentation (specifically examples)
 
 
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/mgan59/mongoose-fixture/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
