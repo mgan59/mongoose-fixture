@@ -15,9 +15,9 @@ module.exports = function(mongoose, conn, callback){
 
     // create your data documents using object-literals
     var fixture = [];
-    
+
     /*
-     * Example of adding a data document/fixture item 
+     * Example of adding a data document/fixture item
      */
     fixture.push({
         // by not defining an _id mongoose-fixture
@@ -26,14 +26,14 @@ module.exports = function(mongoose, conn, callback){
         name:'Some Test Data',
         tags:['test','data']
     });
-    
+
     // an additional example
     fixture.push({
         name:'More Test Data',
         tags:['test','data','more']
     });
-    
-    
+
+
     // mongoose-fixture expects implementor to return
     // the callback passed in context
     return callback(error, fixture);

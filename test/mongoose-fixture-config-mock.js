@@ -56,6 +56,16 @@ var allFixtures = [
         // collection name in for removal process
         collection:'products'
     },
+    {
+        // general name used in output log
+        itemName:'Product',
+        // name of the schema file (without the .js)
+        schema:'ProductSchemaMock',
+        // name of the data-fixture file (without the .js)
+        data:'ProductsObjectLiteralMock',
+        // collection name in for removal process
+        collection:'products'
+    }
 ];
 
 // Create a Listing of fixtures
