@@ -1,5 +1,12 @@
 # Mongoose-Fixture Changelog
 
+## Release 0.3.2
+
+Minor bug fixes with no api breaking changes.
+
+ * Issue [#17](https://github.com/mgan59/mongoose-fixture/issues/17) sharing collections/models in fixture config
+ * Issue [#18](https://github.com/mgan59/mongoose-fixture/issues/18) long standing `--reset` `--remove` exception propogation
+
 ## Release 0.3.1
 
 Was decided that `conn` should also be passed into the schema for a given fixture.  This allows for the binding of the model and schema into the connection within the schema file.  This is done by certain projects and was implemented to facilitate those developers.
