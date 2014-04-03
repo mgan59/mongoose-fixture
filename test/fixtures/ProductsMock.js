@@ -33,6 +33,14 @@ module.exports = function(mongoose, conn, callback){
         tags:['test','data','more']
     });
 
+    // a stub fixture that exists as a point to check
+    // fixture updating code so this fixture should be updated
+    fixture.push({
+        name:'StubName',
+        tags:[]
+    });
+
+
 
     // mongoose-fixture expects implementor to return
     // the callback passed in context
