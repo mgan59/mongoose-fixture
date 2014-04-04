@@ -1,5 +1,22 @@
 # Mongoose-Fixture Changelog
 
+## Release 0.4.0
+
+### Change Log
+
+Update-Fixtures is to address issue #19 but includes other issues.
+
+* Support for fixture updates by adding `update` as a flag in fixture callback and adding logic in `BaseFixtureLoader.js` to handle the operation.
+  * Change required a fix for model loading dependency issue (#21).  `MongooseFixture.js` on init now loads all schemas/models in the mongoose-config schema path.
+  * An example of update now exists in `test/fixtures/ProductUpdateMock.js` will update the examples on documentation site.
+* Cleanup in Tests Commands
+  * Fixed `mongoose.connection` to use `open` event listner
+  * With adjusted mongoose connection the tests and cleanup needed wrapped into closure
+  * Added test for update fixture
+  * Adjustments to schema boilerplate generator, name is now placed into schema and `--suffix` flag to append file suffix names
+  * some typo fixes
+* Adjustments to `mongoose-fixture-config.js` simplified interface by removing what used to be a reference for the schema to load, but now that all schemas are loaded at runtime from the schema-path this is no longer necessary.  To make it easier I renamed the itemName which mapped the `conn.model`
+
 ## Release 0.3.2
 
 Minor bug fixes with no api breaking changes.
