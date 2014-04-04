@@ -48,19 +48,15 @@ var allFixtures = [
     // just an example of a fixture listing
     {
         // general name used in output log
-        itemName:'Product',
+        schema:'Product',
         // name of the schema file (without the .js)
-        schema:'ProductSchemaMock',
-        // name of the data-fixture file (without the .js)
         data:'ProductsMock',
         // collection name in for removal process
         collection:'products'
     },
     {
         // general name used in output log
-        itemName:'Product',
-        // name of the schema file (without the .js)
-        schema:'ProductSchemaMock',
+        schema:'Product',
         // name of the data-fixture file (without the .js)
         data:'ProductsObjectLiteralMock',
         // collection name in for removal process
@@ -73,9 +69,7 @@ var bigFixtures = [
     // just an example of a fixture listing
     {
         // general name used in output log
-        itemName:'Product',
-        // name of the schema file (without the .js)
-        schema:'ProductSchemaMock',
+        schema:'Product',
         // name of the data-fixture file (without the .js)
         data:'ProductsBigMock',
         // collection name in for removal process
@@ -88,9 +82,7 @@ var objLitFixtures = [
     // just an example of a fixture listing
     {
         // general name used in output log
-        itemName:'Product',
-        // name of the schema file (without the .js)
-        schema:'ProductSchemaMock',
+        schema:'Product',
         // name of the data-fixture file (without the .js)
         data:'ProductsObjectLiteralMock',
         // collection name in for removal process
@@ -103,15 +95,26 @@ var brokenRemoveFixtures = [
     // just an example of a fixture listing
     {
         // general name used in output log
-        itemName:'Product',
-        // name of the schema file (without the .js)
-        schema:'ProductSchemaMock',
+        schema:'Product',
         // name of the data-fixture file (without the .js)
         data:'ProductsMock',
         // collection name in for removal process
         collection:'prdocuto'
     },
 ];
+
+var updateFixtures = [
+    // just an example of a fixture listing
+    {
+        // general name used in output log
+        schema:'Product',
+        // name of the data-fixture file (without the .js)
+        data:'ProductsUpdateMock',
+        // collection name in for removal process
+        collection:'products'
+    }
+];
+
 
 
 
@@ -120,6 +123,7 @@ fixtureConfig.fixtureListings.set('all', allFixtures);
 fixtureConfig.fixtureListings.set('big', bigFixtures);
 fixtureConfig.fixtureListings.set('objlit', objLitFixtures);
 fixtureConfig.fixtureListings.set('brokenRemove', brokenRemoveFixtures);
+fixtureConfig.fixtureListings.set('update', updateFixtures);
 
 // export the config
 module.exports = fixtureConfig;

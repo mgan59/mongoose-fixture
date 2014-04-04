@@ -32,11 +32,12 @@ var FIXTURE_MULTINODE_CONFIG_MOCK_FILE = 'mongoose-fixture-multinode-config-mock
 // These are the ones that get generated/deleted on each test run
 var FIXTURE_PRESENCE = 'Products';
 var FIXTURE_PRESENCE_FILE = FIXTURE_PRESENCE+'.js';
-var SCHEMA_PRESENCE = 'ProductSchema';
-var SCHEMA_PRESENCE_FILE = SCHEMA_PRESENCE+'.js';
+var SCHEMA_PRESENCE = 'Product';
+var SCHEMA_PRESENCE_FILE = SCHEMA_PRESENCE+'Schema.js';
 
 // Fixture/Schema Mock data
 var FIXTURE_MOCK = 'ProductsMock.js';
+var FIXTURE_UPDATE_MOCK = 'ProductsUpdateMock.js';
 var BIG_FIXTURE_MOCK = 'ProductsBigMock.js';
 var SCHEMA_MOCK = 'ProductSchemaMock.js';
 
@@ -56,52 +57,39 @@ var mongoSettings = {
     'dbname':'mongoose-fixture-test'
 };
 
-var mongoConnectionString = mongoSettings.host+':'+mongoSettings.port+'/'+mongoSettings.dbname;
-mongoose.connect('mongodb://'+mongoConnectionString);
 
-var mongoDisconnect = function(mongoose){
-    console.log('Tests over so disconnect mongoose'.testSystem);
-    mongoose.disconnect()
-};
+// Setup connection string
+var connectionString = mongoSettings.host+':'+mongoSettings.port+'/'+mongoSettings.dbname;
+// create our connect
+var conn = mongoose.createConnection('mongodb://'+connectionString);
 
-// get our Mock Product schema loaded so we can reset collection and do query later
-// these are the schemas/fixtures we keep around :)
-var mongooseProductSchemaRef = require('./schemas/ProductSchemaMock')(mongoose);
-var mongooseProductModel = mongoose.model('Product', mongooseProductSchemaRef);
+// bind on open listener for each conn
+conn.on('open',function(){
+    var hostString = conn.host+':'+conn.port;
+    var connectionMessage = 'Tap Test Runner - Established Connection MongoD ('+hostString+')';
+    console.log(connectionMessage.green);
 
-
-///////////////////////////
-// File Generator Cleanup
-///////////////////////////
-var preTestCleanup = function(){
-    /*
-       Remove all the 'PRESENCE' based test files generated
-       by the CL execution this way the generators can create
-       new files
-       */
-    var presenceFiles = [
-        path.join(__dirname, FIXTURE_CONFIG_PRESENCE_FILE),
-        path.join(__dirname, 'fixtures', FIXTURE_PRESENCE_FILE),
-        path.join(__dirname, 'schemas', SCHEMA_PRESENCE_FILE),
-    ]
-    for(var ctr=0; ctr < presenceFiles.length; ctr++){
-        var targetExists = fs.existsSync(presenceFiles[ctr]);
-        // unlink config if it exists
-        if(targetExists){
-            fs.unlinkSync(presenceFiles[ctr]);
-        }
-    }
-
-    //console.log(mongoose.connection);
-    // drop the mongoose-fixture-test collection 'products'
-    mongoose.connection.collections['products'].drop( function(err) {
-        console.log('|| Cleanup || \n[Collections dropped and presence files unlinked]'.white);
-    });
+    executeTests(mongoose, conn);
+});
 
 
-}();  //<----- self-invoking on load
 
 
+
+//
+// Tests have deferred execution till mongo connects
+//
+function executeTests(mongoose, conn){
+
+    // load our product-schema
+    var mongooseProductSchemaRef = require('./schemas/ProductSchemaMock')(mongoose, conn);
+    // insert the schema into our active mongo connection
+    var mongooseProductModel = conn.model(mongooseProductSchemaRef.name, mongooseProductSchemaRef.schema);
+
+    // run preTest cleanup
+    preTestCleanup(mongoose, conn);
+
+// Starts Tests
 ////////////////////////////////////////
 // Test CLI File Generators
 ////////////////////////////////////////
@@ -174,7 +162,7 @@ test('Test Generate Schema BoilerPlate'.testDefinition, function(t){
     t.notOk(targetExists, msg.testOutput);
 
     // use the fixture-config-mock to actually generate a fixture file
-    var cmd = "mongoose-fixture --configFile='"+FIXTURE_CONFIG_MOCK_FILE+"' --generateSchema='"+SCHEMA_PRESENCE+"'";
+    var cmd = "mongoose-fixture --configFile='"+FIXTURE_CONFIG_MOCK_FILE+"' --generateSchema='"+SCHEMA_PRESENCE+"' --suffix='Schema'";
 
     process.exec(cmd,function(err, stdout, stdin){
         t.notOk(err, 'No process errors for --generateConfig'.testOutput);
@@ -255,6 +243,33 @@ test('Test Products-Mock fixture data using --add for second time'.testDefinitio
     });
 
 });
+
+/*
+ * Test update fixture
+ */
+test('Test ProductsUpdateMock fixture update'.testDefinition, function(t){
+    t.plan(2);
+
+    // use the fixture-config-mock to actually generate a fixture file
+    var cmd = CLI_MOCK+' --fixture="update" --add';
+    process.exec(cmd, function(err, stdout, stdin){
+
+        // verify stdin message for fixtures loaded
+        var txtMatch = stdout.match(/updated 1 fixtures/);
+        t.ok(txtMatch, 'Fixture updated confirmed from stdout'.testOutput);
+
+        var testUpdateName = 'ReplacedTestPass';
+        // check there is now a matching item with the updated `name`
+        mongooseProductModel.find({name:testUpdateName}, function(err, products){
+            var msg = 'Checking Mongo collection contains matching product for '+testUpdateName;
+            t.ok((products.length > 0), msg.testOutput);
+            t.end();
+        });
+
+    });
+
+});
+
 
 /*
  *  Make sure that if a user provides a busted collection name, that an error is thrown in removeal
@@ -340,8 +355,9 @@ test('Test Products-Mock fixture data using --reset'.testDefinition, function(t)
         mongooseProductModel.find({}, function(err, products){
             var msg = 'Checking Mongo collection contains(>0) '+products.length+' product(s)';
             t.ok((products.length > 0), msg.testOutput);
+
             // last test so disconnect mongoose
-            //mongoDisconnect(mongoose);
+            mongoDisconnect(conn);
             t.end();
         });
 
@@ -349,22 +365,24 @@ test('Test Products-Mock fixture data using --reset'.testDefinition, function(t)
 
 });
 
+} //< end our executeTest closure
+
 /*
  *  This is the test for the multi node instances, comment out if you don't want to run it every time
  */
-/* */
+/*
 test('Test Mulitnode Products-Mock fixture data using --add'.testDefinition, function(t){
     t.plan(2);
 
     // use the fixture-config-mock to actually generate a fixture file
     var cmd = CLI_MULTI_MOCK+' --fixture="big" --add';
     process.exec(cmd, function(err, stdout, stdin){
-        /*
-        *  This test will work differently than the others since we need to check two mongo instaces
-        *  for data and we don't have the proper scaffolding to drop the dbs and recreate
-        *  so just check to ensure that 'Fixtures Loaded on (host:port) exists for the specified instances
-        *
-        */
+        //
+        //  This test will work differently than the others since we need to check two mongo instances
+        //  for data and we don't have the proper scaffolding to drop the dbs and recreate
+        //  so just check to ensure that 'Fixtures Loaded on (host:port) exists for
+        //  the specified instances
+
         // verify stdin message for fixtures loaded
         var txtMatchOne = stdout.match(/Fixtures Loaded on \(localhost:27999\)/);
         var txtMatchTwo = stdout.match(/Fixtures Loaded on \(localhost:27998\)/);
@@ -379,5 +397,51 @@ test('Test Mulitnode Products-Mock fixture data using --add'.testDefinition, fun
     });
 
 });
-/* */
+*/
 
+
+function mongoDisconnect(conn){
+    conn.close(function(err){
+        console.log('Tests over so disconnect mongoose'.testSystem);
+    });
+};
+
+
+///////////////////////////
+// File Generator Cleanup
+///////////////////////////
+function preTestCleanup(mongoose, conn){
+    /*
+       Remove all the 'PRESENCE' based test files generated
+       by the CL execution this way the generators can create
+       new files
+       */
+    var presenceFiles = [
+        path.join(__dirname, FIXTURE_CONFIG_PRESENCE_FILE),
+        path.join(__dirname, 'fixtures', FIXTURE_PRESENCE_FILE),
+        path.join(__dirname, 'schemas', SCHEMA_PRESENCE_FILE),
+    ]
+    for(var ctr=0; ctr < presenceFiles.length; ctr++){
+        var targetExists = fs.existsSync(presenceFiles[ctr]);
+        // unlink config if it exists
+        if(targetExists){
+            fs.unlinkSync(presenceFiles[ctr]);
+        }
+    }
+
+    // drop the mongoose-fixture-test collection 'products'
+    var testCollectionName = 'products';
+    conn.db.collection(testCollectionName, function(err, result){
+        if(err){
+            callback(err);
+        }
+        result.drop(function(err, result){
+            // improve log message to use the fixutre/colleciton name
+            var msg = 'Collection `'+testCollectionName+'` removed';
+            console.log(msg.yellow);
+
+
+        });
+    });
+
+}
